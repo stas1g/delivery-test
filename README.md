@@ -1,1 +1,1 @@
-![Java CI](https://github.com/username/delivery-test/actions/workflows/build.yml/badge.svg)
+![Java CI](https://github.com/stas1g/delivery-test/actions/workflows/gradle.yml/badge.svg)
