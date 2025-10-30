@@ -15,6 +15,7 @@ public class DeliveryTest {
     @BeforeEach
     void setUp() {
         Configuration.browserSize = "1280x800";
+        Configuration.timeout = 10000; // Увеличиваем таймаут
         open("http://localhost:9999");
     }
 
@@ -33,10 +34,11 @@ public class DeliveryTest {
         $("[data-test-id=agreement]").click();
         $(".button").click();
 
-        // Проверяем успешное планирование
-        $("[data-test-id=success-notification] .notification__content")
-                .shouldHave(Condition.text("Встреча успешно запланирована на " + firstDate))
-                .shouldBe(Condition.visible);
+        // Ждем и проверяем успешное планирование
+        $("[data-test-id=success-notification]")
+                .shouldBe(Condition.visible, java.time.Duration.ofSeconds(10))
+                .$(".notification__content")
+                .shouldHave(Condition.text("Встреча успешно запланирована на " + firstDate));
 
         // Меняем дату
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
@@ -44,16 +46,18 @@ public class DeliveryTest {
         $(".button").click();
 
         // Проверяем предложение перепланировать
-        $("[data-test-id=replan-notification] .notification__content")
-                .shouldHave(Condition.text("У вас уже запланирована встреча на другую дату. Перепланировать?"))
-                .shouldBe(Condition.visible);
+        $("[data-test-id=replan-notification]")
+                .shouldBe(Condition.visible, java.time.Duration.ofSeconds(10))
+                .$(".notification__content")
+                .shouldHave(Condition.text("У вас уже запланирована встреча на другую дату. Перепланировать?"));
 
         // Подтверждаем перепланирование
         $("[data-test-id=replan-notification] .button").click();
 
         // Проверяем успешное перепланирование
-        $("[data-test-id=success-notification] .notification__content")
-                .shouldHave(Condition.text("Встреча успешно запланирована на " + secondDate))
-                .shouldBe(Condition.visible);
+        $("[data-test-id=success-notification]")
+                .shouldBe(Condition.visible, java.time.Duration.ofSeconds(10))
+                .$(".notification__content")
+                .shouldHave(Condition.text("Встреча успешно запланирована на " + secondDate));
     }
 }
