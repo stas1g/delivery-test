@@ -6,8 +6,8 @@ import data.DataGenerator;
 import data.UserInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static com.codeborne.selenide.Selenide.*;
+import org.openqa.selenium.Keys;
 
 public class DeliveryTest {
 
@@ -25,12 +25,12 @@ public class DeliveryTest {
 
         // Заполняем форму первый раз
         $("[data-test-id=city] input").setValue(user.getCity());
-        $("[data-test-id=date] input").doubleClick().sendKeys(firstDate);
+        $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
+        $("[data-test-id=date] input").setValue(firstDate);
         $("[data-test-id=name] input").setValue(user.getName());
         $("[data-test-id=phone] input").setValue(user.getPhone());
         $("[data-test-id=agreement]").click();
 
-        // Используем правильный селектор для кнопки
         $$("button").find(Condition.exactText("Запланировать")).click();
 
         // Проверяем успешное планирование
@@ -38,8 +38,9 @@ public class DeliveryTest {
                 .shouldBe(Condition.visible)
                 .shouldHave(Condition.text("Встреча успешно запланирована на " + firstDate));
 
-        // Меняем дату
-        $("[data-test-id=date] input").doubleClick().sendKeys(secondDate);
+        // Меняем дату - ОЧИЩАЕМ ПОЛЕ ПРАВИЛЬНО
+        $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.DELETE);
+        $("[data-test-id=date] input").setValue(secondDate);
         $$("button").find(Condition.exactText("Запланировать")).click();
 
         // Проверяем предложение перепланировать
